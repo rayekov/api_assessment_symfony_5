@@ -9,7 +9,7 @@
         "ext-iconv": "*",
         "composer/package-versions-deprecated": "1.11.99.5",
         "doctrine/annotations": "^1.0",
-        "doctrine/doctrine-bundle": "^2.9.3",
+        "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.13",
         "phpdocumentor/reflection-docblock": "^5.3",
@@ -22,11 +22,14 @@
         "symfony/property-info": "5.3.*",
         "symfony/proxy-manager-bridge": "5.3.*",
         "symfony/runtime": "5.3.*",
+        "symfony/security-bundle": "5.3.*",
         "symfony/serializer": "5.3.*",
         "symfony/yaml": "5.3.*"
     },
     "require-dev": {
-        "symfony/maker-bundle": "1.35"
+        "symfony/maker-bundle": "1.35",
+        "symfony/stopwatch": "5.3.*",
+        "symfony/web-profiler-bundle": "5.3.*"
     },
     "config": {
         "allow-plugins": {
