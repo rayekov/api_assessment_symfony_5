@@ -10,7 +10,7 @@ class Jobs
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'string',length: 36, options:["fixed"])]
+    #[ORM\Column(type: 'uuid',length: 36)]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -27,24 +27,24 @@ class Jobs
 
     #[ORM\ManyToOne(targetEntity: Companies::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $company_id;
+    private $company;
 
     #[ORM\ManyToOne(targetEntity: Professions::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $profession_id;
+    private $profession;
 
     #[ORM\ManyToOne(targetEntity: Divisions::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $division_id;
+    private $division;
 
     #[ORM\ManyToOne(targetEntity: Roles::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $role_id;
+    private $role;
 
     #[ORM\Column(type: 'date', nullable: true)]
     private $date_published;
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
@@ -99,48 +99,48 @@ class Jobs
 
     public function getCompanyId(): ?Companies
     {
-        return $this->company_id;
+        return $this->company;
     }
 
-    public function setCompanyId(?Companies $company_id): self
+    public function setCompanyId(?Companies $company): self
     {
-        $this->company_id = $company_id;
+        $this->company = $company;
 
         return $this;
     }
 
     public function getProfessionId(): ?Professions
     {
-        return $this->profession_id;
+        return $this->profession;
     }
 
-    public function setProfessionId(?Professions $profession_id): self
+    public function setProfessionId(?Professions $profession): self
     {
-        $this->profession_id = $profession_id;
+        $this->profession = $profession;
 
         return $this;
     }
 
     public function getDivisionId(): ?Divisions
     {
-        return $this->division_id;
+        return $this->division;
     }
 
-    public function setDivisionId(?Divisions $division_id): self
+    public function setDivisionId(?Divisions $division): self
     {
-        $this->division_id = $division_id;
+        $this->division = $division;
 
         return $this;
     }
 
     public function getRoleId(): ?Roles
     {
-        return $this->role_id;
+        return $this->role;
     }
 
-    public function setRoleId(?Roles $role_id): self
+    public function setRoleId(?Roles $role): self
     {
-        $this->role_id = $role_id;
+        $this->role = $role;
 
         return $this;
     }
