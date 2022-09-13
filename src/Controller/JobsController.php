@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Jobs;
 use App\Repository\JobsRepository;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 #[Route('/api', name: 'api_')]
 class JobsController extends AbstractController
@@ -17,16 +19,32 @@ class JobsController extends AbstractController
 
     #[Route('/jobs', name: 'jobs')]
     #[Route('/jobs/{from}/{to}/{company}', name: 'jobs_filtered')]
+
     public function index($from=null,$to=null,$company=null): Response
     {
+        
+    
+    $response= new Response();
+    
     
     $em = $this->getDoctrine()->getManager();
     $connection = $em->getConnection();
-    //var_dump($company);die();
 
-    //we verify if user defines date range filter or company
+    //we verify if user defined date range filter or company
     if(!is_null($from) && !is_null($to)){
+
+        //let's create date filter cookies with the values 
+        $cookieFrom = new Cookie('date_filter_from', $from ,time() + (365 * 24 * 60 * 60));
+        $cookieTo = new Cookie('date_filter_to', $to ,time() + (365 * 24 * 60 * 60));
+
+        $response->headers->setCookie($cookieFrom);
+        $response->headers->setCookie($cookieTo);
+
         if(!is_null($company)){
+            //we create a company cookie with the value provided
+            $cookieCompany = new Cookie('company', $company ,time() + (365 * 24 * 60 * 60));
+            $response->headers->setCookie($cookieCompany);
+            
             //we format the string to an array then we put it in a suitable form to be passed in our query
             $company= explode("-", $company);
             $statement = $connection->prepare("SELECT * FROM jobs WHERE date_published BETWEEN '$from' AND '$to' AND company_id IN (".implode(',',$company).")");
@@ -34,7 +52,9 @@ class JobsController extends AbstractController
         }else {
             $statement = $connection->prepare("SELECT * FROM jobs WHERE date_published BETWEEN '$from' AND '$to'");
         }
-       
+
+        $response->sendHeaders();
+
         $jobList = $statement->executeQuery()->fetchAllAssociative();   
     
         $data = [];
@@ -56,6 +76,7 @@ class JobsController extends AbstractController
            ];
         }
     }else{
+
     
     $jobList = $this->jobs
             ->findAll();
@@ -68,11 +89,11 @@ class JobsController extends AbstractController
                'id' => $job->getId(),
                'job' => $job->getJob(),
                'job_ref' => $job->getJobRef(),
-               'company_id' => $job->getCompanyId(),
+               'company_id' => $job->getCompanyId()->getId(),
                'link' => $job->getLink(),
-               'profession_id' => $job->getProfessionId(),
-               'division_id' => $job->getDivisionId(),
-               'role_id' => $job->getRoleId(),
+               'profession_id' => $job->getProfessionId()->getId(),
+               'division_id' => $job->getDivisionId()->getId(),
+               'role_id' => $job->getRoleId()->getId(),
                'date_published' => $job->getDatePublished(),
                'refkey' => $job->getRefkey(),   
               
